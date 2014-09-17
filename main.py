@@ -102,6 +102,8 @@ if __name__ == "__main__":
 	corpus_source_lst = corpus_source_str.split(" ")	# chaque élément séparé par un " " est mis dans une liste
 	corpus_target_lst = corpus_target_str.split(" ")
 
+	final_source_dico = {}
+	final_target_dico = {}
 	final_source_lst = []
 	final_target_lst = []
 	transfuge_lst = []
@@ -114,10 +116,17 @@ if __name__ == "__main__":
 	for elt in corpus_source_lst:
 		elt = elt.split("/")[-1].split(":")[0]		# on récupère le dernier élément avant le "/" et avant un ":"			
 		elt = removeAccent(elt)		# on supprime les accents
-		if not isNotAWord(elt) and not elt.lower() in final_source_lst:
+		if not isNotAWord(elt):
+			if not elt.lower() in final_source_dico.keys():
+				final_source_dico[elt.lower()]=1
+				
+			else:
+				final_source_dico[elt.lower()] += 1
+	for elt in final_source_dico:
+		result_source.write(elt + " = " + str(final_source_dico[elt]) + "\n")
+		if final_source_dico[elt] >= 2:
 			final_source_lst.append(elt)
-			result_source.write(elt + "\n")
-			
+
 	print color.GREEN + "                  DONE" + color.END
 
 
@@ -125,9 +134,16 @@ if __name__ == "__main__":
 	print color.BOLD +"NETTOYAGE DE LA LISTE TARGET ..." + color.END
 	for elt in corpus_target_lst:
 		elt = elt.split("/")[-2]
-		if not isNotAWord(elt) and not elt.lower() in final_target_lst:
-			final_target_lst.append(elt.lower())
-			result_target.write(elt.lower() + "\n")
+		if not isNotAWord(elt):
+			if not elt.lower() in final_target_dico.keys():
+				final_target_dico[elt.lower()]=1
+			else:
+				final_target_dico[elt.lower()] += 1
+	for elt in final_target_dico:
+		result_target.write(elt + " = " + str(final_target_dico[elt]) + "\n")
+		if final_target_dico[elt] >= 2:
+			final_target_lst.append(elt)
+	
 	print color.GREEN + "                  DONE" + color.END
 
 
